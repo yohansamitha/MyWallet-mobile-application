@@ -99,11 +99,19 @@ class SignInScreen extends Component {
                 <LinearGradient
                   colors={['#0531b3', '#436dd7']}
                   style={styles.signIn}>
-                  <Text style={[styles.textSign]}>Sign In</Text>
+                  <Text
+                    style={[
+                      styles.textSign,
+                      {
+                        color: '#fff',
+                      },
+                    ]}>
+                    Sign In
+                  </Text>
                 </LinearGradient>
               </TouchableOpacity>
 
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => this.props.navigation.navigate('SignUpScreen')}
                 style={[
                   styles.signIn,
@@ -114,7 +122,29 @@ class SignInScreen extends Component {
                   },
                 ]}>
                 <Text style={[styles.textSign]}>Sign Up</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
+              <View style={styles.textPrivate}>
+                <Text style={styles.color_textPrivate}>
+                  By signing up you agree to our
+                </Text>
+                <Text style={[styles.color_textPrivate, {fontWeight: 'bold'}]}>
+                  {' '}
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.props.navigation.navigate('SignUpScreen')
+                    }>
+                    <Text
+                      style={[
+                        styles.textSign,
+                        {
+                          fontSize: 15,
+                        },
+                      ]}>
+                      Sign Up
+                    </Text>
+                  </TouchableOpacity>
+                </Text>
+              </View>
             </View>
           </View>
         </View>
@@ -178,8 +208,6 @@ const styles = StyleSheet.create({
   footer: {
     flex: 2,
     backgroundColor: '#fff',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
     paddingHorizontal: 20,
     paddingVertical: 30,
   },
@@ -219,6 +247,14 @@ const styles = StyleSheet.create({
   textSign: {
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  textPrivate: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 20,
+  },
+  color_textPrivate: {
+    color: 'grey',
   },
 });
 
