@@ -14,8 +14,9 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import UserServices from './services/UserServices';
 import UserDTO from './dto/UserDTO';
-
+import {AuthContext} from '../../contex/authContex';
 class SignUpScreen extends Component {
+  static contextType = AuthContext;
   constructor(props) {
     super(props);
     this.state = {
@@ -184,13 +185,6 @@ class SignUpScreen extends Component {
                   autoCapitalize="none"
                   onChangeText={val => this.handleConfirmPasswordChange(val)}
                 />
-                {/* <TouchableOpacity onPress={this.updateConfirmSecureTextEntry()}>
-                {this.state.secureTextEntry ? (
-                  <Feather name="eye-off" color="grey" size={20} />
-                ) : (
-                  <Feather name="eye" color="grey" size={20} />
-                )}
-              </TouchableOpacity> */}
               </View>
               {this.state.isSamePassword ? null : (
                 <View>
@@ -245,7 +239,6 @@ class SignUpScreen extends Component {
                   {' '}
                   <TouchableOpacity
                     onPress={() =>
-                      // this.props.navigation.goBack()
                       this.props.navigation.navigate('SignInScreen')
                     }>
                     <Text
@@ -270,13 +263,13 @@ class SignUpScreen extends Component {
   nicOnChange(val) {
     if (val.trim().length >= 8) {
       this.setState({
-        nicNumber: val,
+        nicNumber: val.trim(),
         isValidNICNumber: true,
         errorNICNumber: false,
       });
     } else {
       this.setState({
-        nicNumber: val,
+        nicNumber: val.trim(),
         isValidNICNumber: false,
         errorNICNumber: true,
       });
@@ -286,32 +279,38 @@ class SignUpScreen extends Component {
   nameOnChange = val => {
     if (val.trim().length >= 8) {
       this.setState({
-        username: val,
+        username: val.trim(),
         check_textInputChange: true,
       });
     } else {
       this.setState({
-        username: val,
+        username: val.trim(),
         check_textInputChange: false,
       });
     }
   };
 
   handleEmailChange(val) {
-    this.handleValidation(
-      val,
-      /[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*/,
-    );
-    this.setState({
-      email: val,
-    });
+    const pattern =
+      /[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*/;
+    if (val !== '' && pattern.test(val)) {
+      this.setState({
+        email: val.trim(),
+        emailValidation: true,
+      });
+    } else {
+      this.setState({
+        email: val.trim(),
+        emailValidation: false,
+      });
+    }
   }
 
-  handleValidation(email, pattern) {
-    let b = pattern.test(email);
-    this.setState({emailValidation: b});
-    console.log('email validation ' + b + ' ' + email);
-  }
+  // handleValidation(email, pattern) {
+  //   let b = pattern.test(email);
+  //   this.setState({emailValidation: b});
+  //   console.log('email validation ' + b + ' ' + email);
+  // }
 
   handlePasswordChange = val => {
     if (val.trim().length > 8 && val.trim().length < 12) {
@@ -370,9 +369,11 @@ class SignUpScreen extends Component {
       )
       .then(response => response.json())
       .then(json => {
-        console.log('response ', json);
+        console.log('register response ', json);
         console.log('==========================');
-        return json.dataObj;
+        // alert add ane data save
+        const {signIn} = this.context;
+        signIn(json.user, json.token);
       })
       .catch(error => {
         console.log('error ' + error);

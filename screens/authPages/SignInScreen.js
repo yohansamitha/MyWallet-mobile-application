@@ -9,8 +9,12 @@ import {
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
+import UserServices from './services/UserServices';
+
+import {AuthContext} from '../../contex/authContex';
 
 class SignInScreen extends Component {
+  static contextType = AuthContext;
   constructor(props) {
     super(props);
     this.state = {
@@ -110,19 +114,6 @@ class SignInScreen extends Component {
                   </Text>
                 </LinearGradient>
               </TouchableOpacity>
-
-              {/* <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('SignUpScreen')}
-                style={[
-                  styles.signIn,
-                  {
-                    borderColor: '#0531b3',
-                    borderWidth: 1,
-                    marginTop: 15,
-                  },
-                ]}>
-                <Text style={[styles.textSign]}>Sign Up</Text>
-              </TouchableOpacity> */}
               <View style={styles.textPrivate}>
                 <Text style={styles.color_textPrivate}>
                   By signing up you agree to our
@@ -152,17 +143,31 @@ class SignInScreen extends Component {
     );
   }
 
-  loginHandle(username, password) {}
+  loginHandle(username, password) {
+    const {signIn} = this.context;
+    const userService = new UserServices();
+    userService
+      .signIn(username, password)
+      .then(response => response.json())
+      .then(json => {
+        console.log('login response : ', json);
+        console.log(json.message);
+        console.log(json.statusCode);
+        console.log(json.token);
+        console.log(json.user);
+        signIn(json.user, json.token);
+      });
+  }
 
   handlePasswordChange(val) {
     if (val.trim().length >= 8) {
       this.setState({
-        password: val,
+        password: val.trim(),
         isValidPassword: true,
       });
     } else {
       this.setState({
-        password: val,
+        password: val.trim(),
         isValidPassword: false,
       });
     }
@@ -177,13 +182,13 @@ class SignInScreen extends Component {
   textInputChange(val) {
     if (val.trim().length >= 4) {
       this.setState({
-        username: val,
+        username: val.trim(),
         check_textInputChange: true,
         isValidUser: true,
       });
     } else {
       this.setState({
-        username: val,
+        username: val.trim(),
         check_textInputChange: false,
         isValidUser: false,
       });
