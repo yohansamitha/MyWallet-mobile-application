@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
@@ -18,6 +19,7 @@ class SignInScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: false,
       username: '',
       check_textInputChange: false,
       isValidUser: true,
@@ -28,128 +30,146 @@ class SignInScreen extends Component {
   }
 
   render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Welcome Back</Text>
+    if (this.state.isLoading) {
+      return (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <ActivityIndicator size="large" color="#0000ff" />
         </View>
-        <View style={styles.footer}>
-          <View>
-            <Text style={styles.text_footer}>Username</Text>
-            <View style={styles.action}>
-              <FontAwesome name="user-o" size={20} />
-              <TextInput
-                placeholder="Your Username"
-                placeholderTextColor="#666666"
-                style={[styles.textInput]}
-                autoCapitalize="none"
-                onChangeText={val => this.textInputChange(val)}
-              />
-              {this.state.check_textInputChange ? (
-                <View>
-                  <Feather name="check-circle" color="green" size={20} />
-                </View>
-              ) : null}
-            </View>
-            {this.state.isValidUser ? null : (
-              <View>
-                <Text>Username must be at 4 characters long</Text>
-              </View>
-            )}
+      );
+    } else {
+      return (
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>Welcome Back</Text>
           </View>
-
-          <View>
-            <Text style={[styles.text_footer, {marginTop: 35}]}>Password</Text>
-            <View style={styles.action}>
-              <Feather name="lock" size={20} />
-              <TextInput
-                placeholder="Your Password"
-                placeholderTextColor="#666666"
-                secureTextEntry={this.state.secureTextEntry}
-                style={[styles.textInput]}
-                autoCapitalize="none"
-                onChangeText={val => this.handlePasswordChange(val)}
-              />
-              <TouchableOpacity
-                onPress={() => {
-                  this.updateSecureTextEntry();
-                }}>
-                {this.state.secureTextEntry ? (
-                  <Feather name="eye-off" color="grey" size={20} />
-                ) : (
-                  <Feather name="eye" color="grey" size={20} />
-                )}
-              </TouchableOpacity>
-            </View>
-            {this.state.isValidPassword ? null : (
-              <View>
-                <Text style={styles.errorMsg}>
-                  Password must be 8 characters long.
-                </Text>
+          <View style={styles.footer}>
+            <View>
+              <Text style={styles.text_footer}>Username</Text>
+              <View style={styles.action}>
+                <FontAwesome name="user-o" size={20} />
+                <TextInput
+                  placeholder="Your Username"
+                  placeholderTextColor="#666666"
+                  style={[styles.textInput]}
+                  autoCapitalize="none"
+                  onChangeText={val => this.textInputChange(val)}
+                />
+                {this.state.check_textInputChange ? (
+                  <View>
+                    <Feather name="check-circle" color="green" size={20} />
+                  </View>
+                ) : null}
               </View>
-            )}
-            <TouchableOpacity>
-              <Text style={{color: '#009387', marginTop: 15}}>
-                Forgot password?
-              </Text>
-            </TouchableOpacity>
+              {this.state.isValidUser ? null : (
+                <View>
+                  <Text>Username must be at 4 characters long</Text>
+                </View>
+              )}
+            </View>
 
-            <View style={styles.button}>
-              <TouchableOpacity
-                style={styles.signIn}
-                onPress={() => {
-                  this.loginHandle(this.state.username, this.state.password);
-                }}>
-                <LinearGradient
-                  colors={['#0531b3', '#436dd7']}
-                  style={styles.signIn}>
-                  <Text
-                    style={[
-                      styles.textSign,
-                      {
-                        color: '#fff',
-                      },
-                    ]}>
-                    Sign In
+            <View>
+              <Text style={[styles.text_footer, {marginTop: 35}]}>
+                Password
+              </Text>
+              <View style={styles.action}>
+                <Feather name="lock" size={20} />
+                <TextInput
+                  placeholder="Your Password"
+                  placeholderTextColor="#666666"
+                  secureTextEntry={this.state.secureTextEntry}
+                  style={[styles.textInput]}
+                  autoCapitalize="none"
+                  onChangeText={val => this.handlePasswordChange(val)}
+                />
+                <TouchableOpacity
+                  onPress={() => {
+                    this.updateSecureTextEntry();
+                  }}>
+                  {this.state.secureTextEntry ? (
+                    <Feather name="eye-off" color="grey" size={20} />
+                  ) : (
+                    <Feather name="eye" color="grey" size={20} />
+                  )}
+                </TouchableOpacity>
+              </View>
+              {this.state.isValidPassword ? null : (
+                <View>
+                  <Text style={styles.errorMsg}>
+                    Password must be 8 characters long.
                   </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-              <View style={styles.textPrivate}>
-                <Text style={styles.color_textPrivate}>
-                  By signing up you agree to our
+                </View>
+              )}
+              <TouchableOpacity>
+                <Text style={{color: '#009387', marginTop: 15}}>
+                  Forgot password?
                 </Text>
-                <Text style={[styles.color_textPrivate, {fontWeight: 'bold'}]}>
-                  {' '}
-                  <TouchableOpacity
-                    onPress={() =>
-                      this.props.navigation.navigate('SignUpScreen')
-                    }>
+              </TouchableOpacity>
+
+              <View style={styles.button}>
+                <TouchableOpacity
+                  style={styles.signIn}
+                  onPress={() => {
+                    this.loginHandle(this.state.username, this.state.password);
+                  }}>
+                  <LinearGradient
+                    colors={['#0531b3', '#436dd7']}
+                    style={styles.signIn}>
                     <Text
                       style={[
                         styles.textSign,
                         {
-                          fontSize: 15,
+                          color: '#fff',
                         },
                       ]}>
-                      Sign Up
+                      Sign In
                     </Text>
-                  </TouchableOpacity>
-                </Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+                <View style={styles.textPrivate}>
+                  <Text style={styles.color_textPrivate}>
+                    Don't have an account?
+                  </Text>
+                  <Text
+                    style={[styles.color_textPrivate, {fontWeight: 'bold'}]}>
+                    {' '}
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.props.navigation.navigate('SignUpScreen')
+                      }>
+                      <Text
+                        style={[
+                          styles.textSign,
+                          {
+                            fontSize: 15,
+                          },
+                        ]}>
+                        Sign Up
+                      </Text>
+                    </TouchableOpacity>
+                  </Text>
+                </View>
               </View>
             </View>
           </View>
         </View>
-      </View>
-    );
+      );
+    }
   }
 
   loginHandle(username, password) {
+    this.setState({
+      isLoading: true,
+    });
     const {signIn} = this.context;
     const userService = new UserServices();
     userService
       .signIn(username, password)
       .then(response => response.json())
       .then(json => {
+        this.setState({
+          isLoading: false,
+        });
+
         console.log('login response : ', json);
         console.log(json.message);
         console.log(json.statusCode);
