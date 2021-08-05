@@ -10,16 +10,18 @@ import React, {useEffect} from 'react';
 import {View, ActivityIndicator} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import RootNavigator from './screens/authPages/RootNavigator';
 import {NavigationContainer} from '@react-navigation/native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import SettingsScreen from './screens/DefaultPages/DrowNavigator';
-import HomeScreen from './screens/DefaultPages/HomeScreen';
+import HomeScreen from './screens/DefaultPages/home/HomeScreen';
+import IncomeScreen from './screens/DefaultPages/incomes/IncomeScreen';
 
 import {AuthContext} from './contex/authContex';
 
-const Drawer = createDrawerNavigator();
+const Tab = createMaterialBottomTabNavigator();
 
 const App = () => {
   const initialLoginState = {
@@ -124,16 +126,47 @@ const App = () => {
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
-  } else {
   }
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
         {loginState.userToken !== null ? (
-          <Drawer.Navigator>
-            <Drawer.Screen name="HomeDrawer" component={HomeScreen} />
-            <Drawer.Screen name="SupportScreen" component={SettingsScreen} />
-          </Drawer.Navigator>
+          <Tab.Navigator
+            initialRouteName="Home"
+            activeColor="#ff3f34"
+            inactiveColor="#1e272e"
+            barStyle={{backgroundColor: '#00a8ff'}}>
+            <Tab.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{
+                tabBarLabel: 'Home',
+                tabBarIcon: ({color}) => (
+                  <MaterialCommunityIcons name="home" color={color} size={26} />
+                ),
+              }}
+            />
+            <Tab.Screen
+              name="Incomes"
+              component={IncomeScreen}
+              options={{
+                tabBarLabel: 'Incomes',
+                tabBarIcon: ({color}) => (
+                  <MaterialIcons name="attach-money" color={color} size={26} />
+                ),
+              }}
+            />
+            <Tab.Screen
+              name="expenses"
+              component={IncomeScreen}
+              options={{
+                tabBarLabel: 'expenses',
+                tabBarIcon: ({color}) => (
+                  <MaterialIcons name="money-off" color={color} size={26} />
+                ),
+              }}
+            />
+          </Tab.Navigator>
         ) : (
           <RootNavigator />
         )}
