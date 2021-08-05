@@ -1,5 +1,5 @@
 export default class UserServices {
-  baseUrl = 'http://dce87c783636.ngrok.io';
+  baseUrl = 'https://ijse-mywallet.herokuapp.com';
   async signUp(userDTO) {
     console.log('testing user method');
     console.log('props data ', userDTO);
